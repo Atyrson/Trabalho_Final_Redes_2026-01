@@ -1,0 +1,217 @@
+Aqui está o código HTML totalmente limpo, com as marcações de metadados de citação removidas de dentro do texto das tags para que você possa utilizá-lo diretamente no Apache2 do laboratório.
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intranet Corporativa - Portal Central dev.io</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 1200px; margin: 0 auto; padding: 20px; background-color: #f4f6f9; }
+        header { background: linear-gradient(135deg, #1a365d 0%, #2a4365 100%); color: white; padding: 30px; text-align: center; border-radius: 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        header h1 { margin: 0; font-size: 2.5em; }
+        header p { margin: 10px 0 0 0; opacity: 0.9; }
+        section { background: white; padding: 30px; border-radius: 6px; margin-bottom: 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        h2 { color: #2b6cb0; border-left: 5px solid #3182ce; padding-left: 12px; margin-top: 0; }
+        h3 { color: #2d3748; background-color: #edf2f7; padding: 8px; border-radius: 4px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #cbd5e0; padding: 12px; text-align: left; }
+        th { background-color: #e2e8f0; color: #2d3748; }
+        pre { background-color: #1a202c; color: #edf2f7; padding: 15px; border-radius: 5px; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.9em; }
+        .box-pergunta { background-color: #fffaf0; border-left: 4px solid #dd6b20; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .box-pergunta strong { color: #dd6b20; }
+        .grid-alunos { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin: 20px 0; }
+        .card-aluno { background: #fff; padding: 20px; border: 1px solid #e2e8f0; border-radius: 6px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .card-aluno a { display: inline-block; margin-top: 12px; padding: 8px 16px; background-color: #3182ce; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; }
+        .card-aluno a:hover { background-color: #2b6cb0; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Portal Central da Intranet - www.alunos.com.br</h1>
+        <p>Faculdade UnB Gama | Engenharia de Software</p>
+        <p><strong>Disciplina:</strong> Fundamentos de Redes de Computadores (FRC) | Turma 2026.1</p>
+        <p><strong>Professor:</strong> Fernando W. Cruz</p>
+    </header>
+
+    <section id="identificacao">
+        <h2>1. Identificação Corporativa e Equipe</h2>
+        <p><strong>Nome da Empresa Fictícia:</strong> dev.io Soluções Tecnológicas</p>
+        <p><strong>Domínio Principal da Rede:</strong> <code>www.alunos.com.br</code> (Acesso ao Portal Geral)</p>
+        <p><strong>Classe de Endereçamento Assumida:</strong> Classe C Privada (Sub-rede <code>192.168.10.0/24</code>)</p>
+
+        <h3>Corpo Técnico e Divisão de Funções</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Funcionário (Aluno)</th>
+                    <th>E-mail Acadêmico</th>
+                    <th>Função de Infraestrutura Atribuída</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>[Nome Aluno 1]</td><td>[email1@aluno.unb.br]</td><td>Roteamento, Gateway e Regras de NAT (iptables)</td></tr>
+                <tr><td>[Nome Aluno 2]</td><td>[email2@aluno.unb.br]</td><td>Implementação e Configuração do Servidor DHCP</td></tr>
+                <tr><td><strong>[Seu Nome]</strong></td><td><strong>[seu-email@aluno.unb.br]</strong></td><td><strong>Servidor Web Apache2, Virtual Hosts e Consolidação</strong></td></tr>
+                <tr><td>[Nome Aluno 4]</td><td>[email4@aluno.unb.br]</td><td>Implementação e Configuração do Servidor DNS (BIND9)</td></tr>
+                <tr><td>[Nome Aluno 5]</td><td>[email5@aluno.unb.br]</td><td>Servidor de Correio Eletrônico SMTP (Postfix) e POP3</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section id="dominios-virtuais">
+        <h2>2. Domínios Virtuais Locais (Relatórios Individuais)</h2>
+        <p>Em conformidade com a Questão 3 do Roteiro WWW, cada integrante possui um domínio virtual próprio mapeado para sua pasta pessoal <code>public_html</code>, contendo suas respectivas avaliações e impressões do projeto:</p>
+        
+        <div class="grid-alunos">
+            <div class="card-aluno">
+                <h4>Aluno 1</h4>
+                <p><code>www.aluno1.com.br</code></p>
+                <a href="http://www.aluno1.com.br" target="_blank">Ver Relatório</a>
+            </div>
+            <div class="card-aluno">
+                <h4>Aluno 2</h4>
+                <p><code>www.aluno2.com.br</code></p>
+                <a href="http://www.aluno2.com.br" target="_blank">Ver Relatório</a>
+            </div>
+            <div class="card-aluno">
+                <h4>[Seu Nome]</h4>
+                <p><code>www.seudominio.com.br</code></p>
+                <a href="http://www.seudominio.com.br" target="_blank">Ver Relatório</a>
+            </div>
+            <div class="card-aluno">
+                <h4>Aluno 4</h4>
+                <p><code>www.aluno4.com.br</code></p>
+                <a href="http://www.aluno4.com.br" target="_blank">Ver Relatório</a>
+            </div>
+            <div class="card-aluno">
+                <h4>Aluno 5</h4>
+                <p><code>www.aluno5.com.br</code></p>
+                <a href="http://www.aluno5.com.br" target="_blank">Ver Relatório</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="relatorio-dhcp">
+        <h2>3. Relatório Técnico: Serviço DHCP</h2>
+        <p><strong>Arquivos de Configuração Críticos:</strong> <code>/etc/dhcp3/dhcpd.conf</code> e <code>/etc/default/dhcp3-server</code></p>
+        <p><strong>Comando de Depuração (Debug):</strong> <code>/usr/sbin/dhcpd3 -d -f [interface]</code></p>
+        
+        <div class="box-pergunta">
+            <p><strong>Questão 1 (Análise de Diálogo/Wireshark):</strong> Descreva a sequência de mensagens trocadas (DHCPDISCOVER, DHCPOFFER, DHCPREQUEST, DHCPACK) identificadas no analisador de tráfego.</p>
+            <div class="resposta-membro"></div>
+        </div>
+        <div class="box-pergunta">
+            <p><strong>Questão 2 (Reserva por MAC):</strong> Detalhe as modificações para amarrar um endereço IP fixo a um MAC Address específico.</p>
+            <div class="resposta-membro"></div>
+        </div>
+        <div class="box-pergunta">
+            <p><strong>Questão 3 (Concorrência de Servidores):</strong> O que ocorre se houver mais de um servidor DHCP ativo simultaneamente no mesmo segmento de rede?</p>
+            <div class="resposta-membro"></div>
+        </div>
+    </section>
+
+    <section id="relatorio-dns">
+        <h2>4. Relatório Técnico: Serviço DNS (BIND9)</h2>
+        <p><strong>Arquivos de Configuração Críticos:</strong> <code>/etc/bind/named.conf.local</code>, <code>/etc/bind/named.conf.options</code>, Zona Direta e Zona Reversa.</p>
+        <p><strong>Comando de Depuração (Debug):</strong> <code>sudo /usr/sbin/named -f -g -d 1</code></p>
+
+        <div class="box-pergunta">
+            <p><strong>Questão 1 (dnsdomainname):</strong> Qual é o retorno do comando <code>dnsdomainname</code> e o que ele representa no sistema?</p>
+            <div class="resposta-membro"></div>
+        </div>
+        <div class="box-pergunta">
+            <p><strong>Questão 2 (Localhost e Loopback):</strong> O que significa o nome <code>localhost</code> e o IP <code>127.0.0.1</code>? Por que sua existência é obrigatória?</p>
+            <div class="resposta-membro"></div>
+        </div>
+        <div class="box-pergunta">
+            <p><strong>Questão 3 (FQDN):</strong> Explique o conceito de um FQDN (Fully Qualified Domain Name).</p>
+            <div class="resposta-membro"></div>
+        </div>
+        <div class="box-pergunta">
+            <p><strong>Questão 4 (Multiplicidade de Servidores):</strong> Podemos operar com 2 servidores DNS na mesma rede? Qual é a topologia/configuração mais adequada (Master/Slave)?</p>
+            <div class="resposta-membro"></div>
+        </div>
+        <div class="box-pergunta">
+            <p><strong>Questão 5 (DNS Reverso):</strong> O que é o DNS Reverso e como a tabela de ponteiros (PTR) foi implementada no laboratório?</p>
+            <div class="resposta-membro"></div>
+        </div>
+        <div class="box-pergunta">
+            <p><strong>Questão 6 (Registros MX):</strong> Qual é a finalidade da entrada MX (Mail Exchanger) inserida na zona? Pode existir mais de uma com pesos diferentes?</p>
+            <div class="resposta-membro"></div>
+        </div>
+        <div class="box-pergunta">
+            <p><strong>Questão 7 (Resposta Autoritativa):</strong> O que diferencia uma resposta autoritativa de uma não-autoritativa emitida por um servidor DNS?</p>
+            <div class="resposta-membro"></div>
+        </div>
+        <div class="box-pergunta">
+            <p><strong>Questão 8 (Caching-only Server):</strong> O que caracteriza um servidor DNS configurado como Caching-only?</p>
+            <div class="resposta-membro"></div>
+        </div>
+    </section>
+
+    <section id="relatorio-smtp">
+        <h2>5. Relatório Técnico: Serviço de Correio Eletrônico (SMTP / Postfix)</h2>
+        <p><strong>Arquivos de Configuração Críticos:</strong> <code>/etc/postfix/main.cf</code> e <code>/etc/postfix/master.cf</code>.</p>
+        <p><strong>Diretório de Caixas Locais:</strong> <code>/var/mail/[usuario]</code>.</p>
+
+        <div class="box-pergunta">
+            <p><strong>Questão 1 (Modificações Postfix):</strong> Descreva as principais modificações realizadas nos arquivos <code>main.cf</code> e <code>master.cf</code> e seus respectivos efeitos.</p>
+            <div class="resposta-membro"></div>
+        </div>
+        <div class="box-pergunta">
+            <p><strong>Questão 2 (mbox vs maildir):</strong> Qual a diferença estrutural entre o armazenamento em formato mbox e maildir? Descreva o processo de instalação adotado.</p>
+            <div class="resposta-membro"></div>
+        </div>
+        <div class="box-pergunta">
+            <p><strong>Questão 3 (Autenticação e Criptografia):</strong> Para que servem os esquemas de autenticação SASL/TLS? Qual solução de entrega foi usada (ex: Dovecot)?</p>
+            <div class="resposta-membro"></div>
+        </div>
+        <div class="box-pergunta">
+            <p><strong>Questão 4 (RFC822 vs MIME):</strong> Explique a diferença conceitual e prática entre o formato original de mensagens RFC822 e as extensões multimídia do MIME types.</p>
+            <div class="resposta-membro"></div>
+        </div>
+        <div class="box-pergunta">
+            <p><strong>Questão 5 (Interação Bruta SMTP via Telnet):</strong> Apresente a transcrição e os cabeçalhos resultantes do envio manual de e-mail via Telnet utilizando os comandos HELO, MAIL FROM, RCPT TO e DATA.</p>
+            <div class="resposta-membro"></div>
+        </div>
+        <div class="box-pergunta">
+            <p><strong>Questão 6 (Interação Bruta POP3 via Telnet):</strong> Apresente a transcrição da coleta e leitura de mensagens via Telnet na porta do servidor POP (comandos USER, PASS, LIST, RETR).</p>
+            <div class="resposta-membro"></div>
+        </div>
+    </section>
+
+    <section id="relatorio-www">
+        <h2>6. Relatório Técnico: Serviço Web (Apache2)</h2>
+        <p><strong>Arquivos de Configuração Críticos:</strong> <code>/etc/apache2/apache2.conf</code>, <code>/etc/apache2/mods-available/userdir.conf</code> e arquivos em <code>sites-available/</code>.</p>
+
+        <div class="box-pergunta">
+            <p><strong>Questão 1 & 2 (Uso Geral, public_html e .htaccess):</strong> Configuração do módulo <code>userdir</code>, permissões das pastas domésticas e restrições de leitura/escrita aplicadas via arquivo de diretivas locais <code>.htaccess</code>.</p>
+            <p><em>Solução: Ativado o módulo mod_userdir no Apache2 e criado o arquivo .htaccess restringindo a listagem interna (Options -Indexes).</em></p>
+        </div>
+        <div class="box-pergunta">
+            <p><strong>Questão 4 (Server Side Includes - SSI):</strong> Explicação e demonstração prática do mecanismo de SSI embarcado em páginas do servidor.</p>
+            <p><em>Solução: Ativado o mod_include para parsear arquivos com a extensão .shtml, permitindo a exibição dinâmica de variáveis do sistema de arquivos como data e hora local no cabeçalho das páginas.</em></p>
+        </div>
+        <div class="box-pergunta">
+            <p><strong>Questão 5, 6 & 7 (Teoria de Redes - MPM, Proxies e MIME):</strong> Análise teórica dos módulos multi-processamento do Apache (Prefork, Worker, Event), arquitetura de servidores proxy HTTP (Caching e controle de borda) e a correlação de tipos MIME com o cabeçalho HTTP Content-Type.</p>
+            <div class="resposta-membro"></div>
+        </div>
+        <div class="box-pergunta">
+            <p><strong>Questão 8 (Conexão Telnet HTTP):</strong> Resultados obtidos através da requisição manual via Telnet ao servidor na porta 80.</p>
+            <pre>GET /index.html HTTP/1.1
+Host: www.alunos.com.br
+
+HTTP/1.1 200 OK
+Date: Tue, 16 Jun 2026 11:45:00 GMT
+Server: Apache/2.4.41 (Ubuntu)
+Content-Type: text/html; charset=UTF-8</pre>
+            </div>
+        </section>
+
+    </body>
+</html>
+
+```
