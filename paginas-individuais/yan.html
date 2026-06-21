@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatório Individual — Yan Lucas Souza Guimarães</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; font-size: 15px; color: #222; background: #f4f6f8; padding: 40px 20px; }
+    .container { max-width: 860px; margin: 0 auto; background: #fff; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; }
+    header { background: #1a3a5c; color: #fff; padding: 32px 40px; }
+    header .empresa { font-size: 13px; letter-spacing: 1px; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    header h1 { font-size: 22px; font-weight: bold; margin-bottom: 4px; }
+    header .subtitulo { font-size: 13px; opacity: 0.7; }
+    nav { background: #eef2f7; border-bottom: 1px solid #ddd; padding: 10px 40px; font-size: 13px; color: #555; }
+    nav a { color: #1a3a5c; text-decoration: none; }
+    nav a:hover { text-decoration: underline; }
+    main { padding: 36px 40px; }
+    .info-box { background: #f0f4f8; border-left: 4px solid #1a3a5c; padding: 16px 20px; margin-bottom: 32px; border-radius: 0 4px 4px 0; }
+    .info-box table { border-collapse: collapse; width: 100%; }
+    .info-box td { padding: 4px 8px 4px 0; vertical-align: top; }
+    .info-box td:first-child { font-weight: bold; width: 160px; color: #444; }
+    section { margin-bottom: 36px; }
+    section h2 { font-size: 16px; color: #1a3a5c; border-bottom: 2px solid #1a3a5c; padding-bottom: 6px; margin-bottom: 14px; }
+    section p { line-height: 1.7; color: #333; margin-bottom: 10px; }
+    .servicos { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 10px; }
+    .servico-card { border: 1px solid #dde3ea; border-radius: 4px; padding: 14px 16px; }
+    .servico-card h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: #1a3a5c; margin-bottom: 6px; }
+    .servico-card p { font-size: 13px; color: #555; margin: 0; }
+    footer { background: #eef2f7; border-top: 1px solid #ddd; padding: 16px 40px; font-size: 12px; color: #888; text-align: center; }
+    footer a { color: #1a3a5c; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>Relatório Individual</h1>
+    <div class="subtitulo">Fundamentos de Redes de Computadores — 2026.1 · Prof. Fernando W Cruz</div>
+  </header>
+
+  <nav>
+    <a href="http://www.alunos.com.br">← Página principal do grupo</a>
+  </nav>
+
+  <main>
+
+    <div class="info-box">
+      <table>
+        <tr><td>Aluno</td><td>Yan Lucas Souza Guimarães</td></tr>
+        <tr><td>Matrícula</td><td>222006220</td></tr>
+        <tr><td>Domínio virtual</td><td>www.yan.com.br</td></tr>
+        <tr><td>Serviço principal</td><td>WWW (Apache2) — documentação e respostas</td></tr>
+        <tr><td>Colaboração</td><td>Respostas da seção WWW em conjunto com Atyrson Souto Da Silva</td></tr>
+      </table>
+    </div>
+
+    <section>
+      <h2>1. Parte em que mais participei</h2>
+      <p>
+        Minha principal contribuição foi a documentação do processo de implementação do serviço WWW,
+        desenvolvido em conjunto com Atyrson Souto Da Silva. Acompanhei e registrei cada etapa da
+        configuração realizada em ambiente virtualizado: a criação das duas VMs no VirtualBox com
+        rede interna <em>intranet-frc</em>, a alternância da interface entre NAT e Rede Interna,
+        a instalação do Apache2, a criação do portal central do grupo e a sequência de comandos
+        usados para configurar o diretório <code>public_html</code> do usuário <em>atyrson</em>.
+      </p>
+      <p>
+        Também participei, junto com Atyrson, da elaboração de todas as respostas às questões do
+        roteiro da seção WWW presentes no relatório do grupo, incluindo as questões sobre MPMs,
+        proxy server, MIME e a análise do protocolo HTTP via telnet.
+      </p>
+    </section>
+
+    <section>
+      <h2>2. Dificuldades encontradas</h2>
+      <p>
+        A maior dificuldade foi acompanhar e registrar os processos de configuração com precisão
+        suficiente para que o relatório refletisse o que foi feito de fato, sem omitir detalhes
+        relevantes como os erros de sintaxe encontrados no <code>userdir.conf</code> e as
+        decisões tomadas durante a execução, como o uso do <code>/etc/hosts</code> na VM2 para
+        contornar a ausência do servidor DNS durante os testes.
+      </p>
+      <p>
+        O tempo disponível para realizar e documentar tudo foi curto, o que tornou o processo
+        mais corrido do que o esperado.
+      </p>
+    </section>
+
+    <section>
+      <h2>3. O que aprendi</h2>
+      <p>
+        O acompanhamento da configuração permitiu entender como o Apache2 separa a configuração
+        em módulos independentes e como a ordem de ativação desses módulos afeta o funcionamento
+        do servidor. Ficou claro também como as permissões do sistema de arquivos do Linux
+        se relacionam diretamente com o que o servidor web consegue ou não acessar.
+      </p>
+      <p>
+        Do ponto de vista de protocolos, a elaboração das respostas do roteiro ajudou a fixar
+        conceitos como a diferença entre os MPMs do Apache, o papel do MIME nos cabeçalhos HTTP
+        e o funcionamento de um proxy reverso em redes corporativas.
+      </p>
+    </section>
+
+    <section>
+      <h2>4. Opinião pessoal sobre o trabalho</h2>
+      <p>
+        O trabalho foi bastante trabalhoso considerando o tempo disponível para execução. A
+        quantidade de etapas envolvidas, desde a configuração da infraestrutura de rede até
+        a documentação de cada comando e a elaboração das respostas teóricas, tornou o processo
+        corrido, com pouco espaço para revisar cada parte com mais calma.
+      </p>
+      <p>
+        De qualquer forma, o conteúdo praticado é relevante e a experiência de configurar um
+        ambiente de rede do zero, mesmo que em VMs, ajuda a entender como os serviços se
+        integram na prática.
+      </p>
+    </section>
+
+    <section>
+      <h2>5. Resumo dos serviços implementados pelo grupo</h2>
+      <div class="servicos">
+        <div class="servico-card">
+          <h3>DHCP</h3>
+          <p>Distribuição automática de endereços IP na faixa 192.168.10.0/24.</p>
+        </div>
+        <div class="servico-card">
+          <h3>DNS</h3>
+          <p>Resolução de nomes para o domínio pipevendas.com.br via BIND9.</p>
+        </div>
+        <div class="servico-card">
+          <h3>SMTP</h3>
+          <p>Servidor de e-mail Postfix com entrega local e acesso POP.</p>
+        </div>
+        <div class="servico-card">
+          <h3>WWW</h3>
+          <p>Servidor Apache2 com domínios virtuais, public_html e SSI, configurado em VMs com rede interna isolada.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    Universidade de Brasília — FGA &nbsp;|&nbsp;
+    <a href="http://www.alunos.com.br">www.alunos.com.br</a> &nbsp;|&nbsp;
+    Turma 2026.1
+  </footer>
+
+</div>
+</body>
+</html>

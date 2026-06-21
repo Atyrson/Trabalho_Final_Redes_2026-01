@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatório Individual — Atyrson Souto Da Silva</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; font-size: 15px; color: #222; background: #f4f6f8; padding: 40px 20px; }
+    .container { max-width: 860px; margin: 0 auto; background: #fff; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; }
+    header { background: #1a3a5c; color: #fff; padding: 32px 40px; }
+    header .empresa { font-size: 13px; letter-spacing: 1px; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    header h1 { font-size: 22px; font-weight: bold; margin-bottom: 4px; }
+    header .subtitulo { font-size: 13px; opacity: 0.7; }
+    nav { background: #eef2f7; border-bottom: 1px solid #ddd; padding: 10px 40px; font-size: 13px; color: #555; }
+    nav a { color: #1a3a5c; text-decoration: none; }
+    nav a:hover { text-decoration: underline; }
+    main { padding: 36px 40px; }
+    .info-box { background: #f0f4f8; border-left: 4px solid #1a3a5c; padding: 16px 20px; margin-bottom: 32px; border-radius: 0 4px 4px 0; }
+    .info-box table { border-collapse: collapse; width: 100%; }
+    .info-box td { padding: 4px 8px 4px 0; vertical-align: top; }
+    .info-box td:first-child { font-weight: bold; width: 160px; color: #444; }
+    section { margin-bottom: 36px; }
+    section h2 { font-size: 16px; color: #1a3a5c; border-bottom: 2px solid #1a3a5c; padding-bottom: 6px; margin-bottom: 14px; }
+    section p { line-height: 1.7; color: #333; margin-bottom: 10px; }
+    .servicos { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 10px; }
+    .servico-card { border: 1px solid #dde3ea; border-radius: 4px; padding: 14px 16px; }
+    .servico-card h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: #1a3a5c; margin-bottom: 6px; }
+    .servico-card p { font-size: 13px; color: #555; margin: 0; }
+    footer { background: #eef2f7; border-top: 1px solid #ddd; padding: 16px 40px; font-size: 12px; color: #888; text-align: center; }
+    footer a { color: #1a3a5c; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>Relatório Individual</h1>
+    <div class="subtitulo">Fundamentos de Redes de Computadores — 2026.1 · Prof. Fernando W Cruz</div>
+  </header>
+
+  <nav>
+    <a href="http://www.alunos.com.br">← Página principal do grupo</a>
+  </nav>
+
+  <main>
+
+    <div class="info-box">
+      <table>
+        <tr><td>Aluno</td><td>Atyrson Souto Da Silva</td></tr>
+        <tr><td>Matrícula</td><td>251005945</td></tr>
+        <tr><td>Domínio virtual</td><td>www.atyrson.com.br</td></tr>
+        <tr><td>Serviço principal</td><td>WWW (Apache2)</td></tr>
+        <tr><td>Colaboração</td><td>Respostas da seção WWW em conjunto com Yan Lucas Souza Guimarães</td></tr>
+      </table>
+    </div>
+
+    <section>
+      <h2>1. Parte em que mais participei</h2>
+      <p>
+        Minha principal contribuição no projeto foi a implementação do serviço WWW. O trabalho foi realizado
+        em ambiente virtualizado, com duas máquinas virtuais criadas no VirtualBox interconectadas por uma
+        rede interna isolada chamada <em>intranet-frc</em>. A VM1 atuou como servidor e a VM2 como cliente de testes.
+      </p>
+      <p>
+        Fui responsável por toda a configuração do ambiente: criação e configuração das VMs, ajuste das
+        interfaces de rede (alternando entre NAT para instalação de pacotes e Rede Interna para os testes),
+        instalação e configuração do Apache2, criação do portal central do grupo em
+        <code>/var/www/html/index.html</code>, ativação do módulo <code>userdir</code>, criação do usuário
+        <em>atyrson</em> com o respectivo diretório <code>public_html</code>, configuração de permissões,
+        criação do arquivo <code>.htaccess</code> com a diretiva <code>Options -Indexes</code>, e criação
+        do Virtual Host <code>www.atyrson.com.br</code> com ativação do módulo SSI.
+      </p>
+      <p>
+        Também participei, junto com Yan Lucas Souza Guimarães, da elaboração de todas as respostas às
+        questões do roteiro da seção WWW presentes no relatório do grupo.
+      </p>
+    </section>
+
+    <section>
+      <h2>2. Dificuldades encontradas</h2>
+      <p>
+        A principal dificuldade foi um erro de sintaxe no arquivo
+        <code>/etc/apache2/mods-enabled/userdir.conf</code>, causado por uma formatação acidental durante
+        a edição. O erro impedia o Apache de iniciar corretamente e foi resolvido reescrevendo o arquivo
+        do zero com a estrutura correta, incluindo as diretivas <code>AllowOverride All</code> e
+        <code>Require all granted</code>.
+      </p>
+      <p>
+        Outro ponto que exigiu atenção foi o isolamento de rede entre as VMs. O NetworkManager
+        sobrescrevia os IPs estáticos definidos manualmente sempre que era reiniciado, o que foi
+        resolvido desativando o serviço antes de configurar os endereços com <code>ip addr</code>.
+        Além disso, como o servidor DNS do grupo ainda não estava disponível durante os testes,
+        foi necessário mapear os domínios virtuais diretamente no arquivo <code>/etc/hosts</code> da VM2.
+      </p>
+    </section>
+
+    <section>
+      <h2>3. O que aprendi</h2>
+      <p>
+        O experimento permitiu compreender na prática como o Apache2 organiza sua configuração em módulos
+        e arquivos de sites separados, e como a ativação e desativação desses componentes afeta o
+        comportamento do servidor. Ficou claro como o sistema de permissões do Linux está diretamente
+        ligado ao funcionamento do serviço web, especialmente no caso dos diretórios <code>public_html</code>.
+      </p>
+      <p>
+        Também foi possível entender como os domínios virtuais funcionam na camada de aplicação: o Apache
+        usa o cabeçalho <code>Host</code> da requisição HTTP para decidir qual <code>DocumentRoot</code>
+        servir, independentemente do IP de destino. Isso torna visível a separação entre o protocolo HTTP
+        e a resolução de nomes feita pelo DNS.
+      </p>
+    </section>
+
+    <section>
+      <h2>4. Opinião pessoal sobre o trabalho</h2>
+      <p>
+        O trabalho em si é interessante e cobre um conjunto representativo de serviços de rede que
+        funcionam de forma integrada. No entanto, a carga de sintetizar e documentar todos os processos
+        é bastante grande, o que torna o trabalho mais pesado do que aparenta à primeira vista.
+      </p>
+      <p>
+        Um ponto relevante é que toda a configuração foi feita em ambiente virtual, o que funcionou bem
+        para fins de aprendizado, mas significa que ao chegar no laboratório será necessário refazer
+        tudo do zero nas máquinas físicas, sem as configurações já salvas. Isso exigirá uma segunda
+        execução completa do processo, desta vez dentro do tempo disponível na bancada.
+      </p>
+    </section>
+
+    <section>
+      <h2>5. Resumo dos serviços implementados pelo grupo</h2>
+      <div class="servicos">
+        <div class="servico-card">
+          <h3>DHCP</h3>
+          <p>Distribuição automática de endereços IP na faixa 192.168.10.0/24.</p>
+        </div>
+        <div class="servico-card">
+          <h3>DNS</h3>
+          <p>Resolução de nomes para o domínio pipevendas.com.br via BIND9.</p>
+        </div>
+        <div class="servico-card">
+          <h3>SMTP</h3>
+          <p>Servidor de e-mail Postfix com entrega local e acesso POP.</p>
+        </div>
+        <div class="servico-card">
+          <h3>WWW</h3>
+          <p>Servidor Apache2 com domínios virtuais, public_html e SSI, configurado em VMs com rede interna isolada.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    Universidade de Brasília — FGA &nbsp;|&nbsp;
+    <a href="http://www.alunos.com.br">www.alunos.com.br</a> &nbsp;|&nbsp;
+    Turma 2026.1
+  </footer>
+
+</div>
+</body>
+</html>
