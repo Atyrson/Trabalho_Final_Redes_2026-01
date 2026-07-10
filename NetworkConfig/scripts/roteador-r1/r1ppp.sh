@@ -37,8 +37,8 @@ echo
 
 SERIAL_PPP=$(escolher_item "Selecione o dispositivo serial do enlace PPP:" "$(list_serial_devices)")
 
-read -rp "IP local do R1 no enlace PPP [padrão 172.16.0.1]: " IP_LOCAL
-IP_LOCAL=${IP_LOCAL:-172.16.0.1}
+read -rp "IP local do R1 no enlace PPP [padrão 10.0.0.1]: " IP_LOCAL
+IP_LOCAL=${IP_LOCAL:-10.0.0.1}
 read -rp "IP remoto de R2 no enlace PPP [padrão 10.0.0.2]: " IP_REMOTO
 IP_REMOTO=${IP_REMOTO:-10.0.0.2}
 
@@ -68,7 +68,7 @@ done
 if ip link show ppp0 &>/dev/null; then
     sudo ip link set ppp0 multicast on
     echo "[R1] Configurando rotas via ppp0"
-    sudo ip route add 192.168.2.0/24 via "$IP_REMOTO" dev ppp0 || true
+    sudo ip route add 192.168.0.0/24 via "$IP_REMOTO" dev ppp0 || true
     sudo ip route add 224.0.0.0/4 dev ppp0 || true
     echo
     echo "ppp0 configurado com sucesso:"
