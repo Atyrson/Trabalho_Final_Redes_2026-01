@@ -12,6 +12,7 @@ venv/
 *.egg-info/
 *.sqlite3
 *.tsbuildinfo
+backend/backend-server*.log
 
 # Variaveis de ambiente
 .env
