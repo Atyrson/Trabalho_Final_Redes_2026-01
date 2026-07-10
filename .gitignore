@@ -23,6 +23,7 @@ node_modules/
 dist/
 build/
 frontend/.tmp/
+frontend/dev-server*.log
 frontend/vite.config.js
 frontend/vite.config.d.ts
 
