@@ -17,6 +17,7 @@ export function AuthCallbackPage() {
     completeLogin()
       .then(() => setDone(true))
       .catch((unknownError) => {
+        console.error("OIDC callback failed", unknownError);
         const message = unknownError instanceof Error ? unknownError.message : "Erro desconhecido";
         setError(message);
       });

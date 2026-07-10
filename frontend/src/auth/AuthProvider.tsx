@@ -27,7 +27,7 @@ function loadInitialState(): Pick<AuthState, "token" | "claims"> {
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState(loadInitialState);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(() => window.location.pathname !== "/auth/callback");
 
   const logout = useCallback(async () => {
     clearToken();
@@ -51,11 +51,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const completeLogin = useCallback(async () => {
+    setIsLoading(true);
     const user = await oidcUserManager.signinRedirectCallback();
     applyToken(user.access_token);
+    setIsLoading(false);
   }, [applyToken]);
 
   useEffect(() => {
+    if (window.location.pathname === "/auth/callback") {
+      return;
+    }
     oidcUserManager.getUser().then((user) => {
       applyToken(user?.access_token);
       setIsLoading(false);
