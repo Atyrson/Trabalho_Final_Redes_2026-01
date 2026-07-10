@@ -11,6 +11,7 @@ venv/
 
 *.egg-info/
 *.sqlite3
+*.tsbuildinfo
 
 # Variaveis de ambiente
 .env
@@ -21,6 +22,9 @@ venv/
 node_modules/
 dist/
 build/
+frontend/.tmp/
+frontend/vite.config.js
+frontend/vite.config.d.ts
 
 # Editores
 .vscode/
