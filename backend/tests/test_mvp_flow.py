@@ -1,9 +1,5 @@
-def test_e2e_lan_login_list_enter_playlist_leave(app_client):
-    login = app_client.post(
-        "/api/oauth/token",
-        data={"username": "cliente1", "password": "cliente123"},
-    )
-    headers = {"Authorization": f"Bearer {login.json()['access_token']}"}
+def test_e2e_lan_oidc_token_list_enter_playlist_leave(app_client, token_factory):
+    headers = {"Authorization": f"Bearer {token_factory('cliente1')}"}
 
     channels = app_client.get("/api/canais", headers=headers)
     enter = app_client.post("/api/canais/1/entrar", headers=headers)
@@ -11,7 +7,6 @@ def test_e2e_lan_login_list_enter_playlist_leave(app_client):
     playlist = app_client.get(f"/api/sessoes/{session_id}/playlist.m3u", headers=headers)
     leave = app_client.post(f"/api/sessoes/{session_id}/sair", headers=headers)
 
-    assert login.status_code == 200
     assert channels.status_code == 200
     assert enter.json()["multicast_address"] == "239.10.7.1"
     assert "udp://@239.10.7.1:5004" in playlist.text

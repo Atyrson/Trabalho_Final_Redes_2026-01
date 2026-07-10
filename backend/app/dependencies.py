@@ -13,11 +13,12 @@ def get_current_user(request: Request) -> dict:
         raise HTTPException(status_code=401, detail="missing bearer token")
     try:
         payload = decode_access_token(header.split(" ", 1)[1])
-        user = repo.get_user(int(payload["sub"]))
+        user = repo.find_user_by_login(payload["login"])
     except (KeyError, TypeError, ValueError):
         user = None
     if not user:
         raise HTTPException(status_code=401, detail="invalid token")
+    user["role"] = payload["role"]
     return user
 
 

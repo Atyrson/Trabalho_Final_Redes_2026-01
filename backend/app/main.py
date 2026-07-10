@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from app.db import init_db
-from app.routers import admin, channels, oauth
+from app.routers import admin, channels
 
 
 def create_app() -> FastAPI:
@@ -12,7 +12,6 @@ def create_app() -> FastAPI:
         redoc_url="/api/redoc",
         openapi_url="/api/openapi.json",
     )
-    app.include_router(oauth.router)
     app.include_router(channels.router)
     app.include_router(admin.router)
 
