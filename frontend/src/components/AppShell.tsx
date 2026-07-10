@@ -1,15 +1,13 @@
 import { LogOut, MonitorPlay, ShieldCheck } from "lucide-react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 import { displayLogin } from "../auth/token";
 
 export function AppShell() {
   const auth = useAuth();
-  const navigate = useNavigate();
 
   function handleLogout() {
     void auth.logout();
-    navigate("/login", { replace: true });
   }
 
   return (
