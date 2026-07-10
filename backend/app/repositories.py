@@ -215,6 +215,33 @@ def list_active_sessions(profile: str | None = None) -> list[dict[str, Any]]:
         return [dict(row) for row in con.execute(query, params).fetchall()]
 
 
+def list_stale_sessions(timeout_seconds: int) -> list[dict[str, Any]]:
+    with transaction() as con:
+        return [
+            dict(row)
+            for row in con.execute(
+                """
+                SELECT *
+                FROM sessions
+                WHERE active = 1
+                  AND last_seen <= datetime('now', ?)
+                """,
+                (f"-{timeout_seconds} seconds",),
+            ).fetchall()
+        ]
+
+
+def deactivate_sessions(session_ids: list[int]) -> None:
+    if not session_ids:
+        return
+    placeholders = ",".join("?" for _ in session_ids)
+    with transaction() as con:
+        con.execute(
+            f"UPDATE sessions SET active = 0, last_seen = CURRENT_TIMESTAMP WHERE id IN ({placeholders})",
+            session_ids,
+        )
+
+
 def find_active_stream(profile: str, channel_id: int) -> dict[str, Any] | None:
     with transaction() as con:
         return _one(

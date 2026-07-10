@@ -9,6 +9,7 @@ Backend FastAPI para a Mini-IPTV. O Apache em R1 termina HTTPS e encaminha apena
 - `IPTV_GROUP_ID`: ID numerico do grupo usado nos enderecos multicast.
 - `WAN_CIDRS`: faixas que representam X e Y na WAN115K, separadas por virgula.
 - `MEDIA_ROOT`: raiz dos arquivos de midia ja presentes no host S.
+- `SESSION_TIMEOUT_SECONDS`: tempo sem heartbeat para expirar uma sessao ativa. Padrao: `60`.
 
 ## Execucao
 
@@ -60,6 +61,20 @@ O backend classifica `WAN115K` quando o primeiro IP de `X-Forwarded-For` esta de
 5. Abrir no VLC Client o fluxo `udp://@<multicast>:5004`.
 6. Manter sessao: `POST /api/sessoes/{id}/heartbeat`.
 7. Sair: `POST /api/sessoes/{id}/sair`.
+
+## Rotas administrativas para o frontend
+
+As rotas abaixo exigem JWT de usuario `admin`:
+
+- `GET /api/admin/dashboard`: resumo operacional, fluxos multicast e PIDs do VLC.
+- `POST /api/admin/canais`, `PUT /api/admin/canais/{id}`, `DELETE /api/admin/canais/{id}`: manutencao de canais.
+- `GET /api/admin/videos`: listagem de videos cadastrados para associacao aos canais.
+- `POST /api/admin/videos`, `PUT /api/admin/videos/{id}`, `DELETE /api/admin/videos/{id}`: manutencao de referencias de video.
+- `POST /api/admin/videos/{id}/metadata`: leitura de metadados via `ffprobe` a partir do `hd_path`.
+
+## Expiracao de sessoes
+
+O frontend envia heartbeat periodico para `POST /api/sessoes/{id}/heartbeat`. Se uma sessao ficar sem heartbeat por mais de `SESSION_TIMEOUT_SECONDS`, ela e desativada automaticamente nas proximas leituras de canais, acessos ao dashboard ou tentativas de entrada em canal. Quando a ultima sessao ativa de um canal/perfil expira, o backend encerra o stream VLC correspondente.
 
 ## Regras principais
 

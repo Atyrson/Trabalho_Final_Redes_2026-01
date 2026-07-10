@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from app import repositories as repo
 from app.dependencies import get_current_user, require_admin
 from app.services.media import probe_metadata
+from app.services.sessions import cleanup_stale_sessions
 
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
@@ -35,6 +36,7 @@ def _admin(current_user: dict = Depends(get_current_user)):
 
 @router.get("/dashboard")
 def dashboard(current_user: dict = Depends(_admin)):
+    cleanup_stale_sessions()
     return repo.dashboard()
 
 
@@ -60,6 +62,11 @@ def delete_channel(channel_id: int, current_user: dict = Depends(_admin)):
 @router.post("/videos", status_code=201)
 def create_video(payload: VideoPayload, current_user: dict = Depends(_admin)):
     return repo.create_video(payload.model_dump())
+
+
+@router.get("/videos")
+def list_videos(current_user: dict = Depends(_admin)):
+    return repo.list_videos()
 
 
 @router.put("/videos/{video_id}")

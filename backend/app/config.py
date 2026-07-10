@@ -10,6 +10,7 @@ class Settings:
     iptv_group_id: int
     wan_cidrs: list[str]
     media_root: Path
+    session_timeout_seconds: int
 
 
 def get_settings() -> Settings:
@@ -19,6 +20,7 @@ def get_settings() -> Settings:
         iptv_group_id=int(os.getenv("IPTV_GROUP_ID", "1")),
         wan_cidrs=[cidr.strip() for cidr in os.getenv("WAN_CIDRS", "192.168.0.0/24").split(",") if cidr.strip()],
         media_root=Path(os.getenv("MEDIA_ROOT", "./media")),
+        session_timeout_seconds=int(os.getenv("SESSION_TIMEOUT_SECONDS", "60")),
     )
 
 
