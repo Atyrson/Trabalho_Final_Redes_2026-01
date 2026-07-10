@@ -8,16 +8,21 @@ function unsignedJwt(payload: object) {
 
 describe("token helpers", () => {
   it("decodes jwt claims", () => {
-    const token = unsignedJwt({ sub: "cliente1", role: "client", exp: 4_102_444_800 });
+    const token = unsignedJwt({
+      sub: "test-cliente1",
+      preferred_username: "cliente1",
+      realm_access: { roles: ["client"] },
+      exp: 4_102_444_800,
+    });
 
-    expect(decodeToken(token)).toMatchObject({ sub: "cliente1", role: "client" });
+    expect(decodeToken(token)).toMatchObject({ preferred_username: "cliente1", role: "client" });
   });
 
   it("detects expired claims", () => {
     vi.setSystemTime(new Date("2026-01-01T00:00:00Z"));
 
-    expect(isExpired({ sub: "cliente1", role: "client", exp: 1 })).toBe(true);
-    expect(isExpired({ sub: "cliente1", role: "client", exp: 4_102_444_800 })).toBe(false);
+    expect(isExpired({ sub: "test-cliente1", role: "client", exp: 1 })).toBe(true);
+    expect(isExpired({ sub: "test-cliente1", role: "client", exp: 4_102_444_800 })).toBe(false);
 
     vi.useRealTimers();
   });

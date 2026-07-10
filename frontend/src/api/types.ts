@@ -8,7 +8,13 @@ export interface AuthToken {
 
 export interface JwtClaims {
   sub: string;
-  role: UserRole;
+  preferred_username?: string;
+  login?: string;
+  role?: UserRole;
+  azp?: string;
+  aud?: string | string[];
+  realm_access?: { roles?: string[] };
+  resource_access?: Record<string, { roles?: string[] }>;
   exp: number;
 }
 

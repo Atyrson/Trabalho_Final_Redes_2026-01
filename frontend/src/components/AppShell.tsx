@@ -1,13 +1,14 @@
 import { LogOut, MonitorPlay, ShieldCheck } from "lucide-react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
+import { displayLogin } from "../auth/token";
 
 export function AppShell() {
   const auth = useAuth();
   const navigate = useNavigate();
 
   function handleLogout() {
-    auth.logout();
+    void auth.logout();
     navigate("/login", { replace: true });
   }
 
@@ -19,7 +20,7 @@ export function AppShell() {
             <MonitorPlay className="h-6 w-6 text-signal" aria-hidden="true" />
             <div>
               <p className="text-sm font-semibold leading-none">Mini-IPTV</p>
-              <p className="text-xs text-slate-500">{auth.claims?.sub}</p>
+              <p className="text-xs text-slate-500">{displayLogin(auth.claims)}</p>
             </div>
           </div>
           <nav className="flex items-center gap-2">

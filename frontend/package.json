@@ -16,6 +16,7 @@
     "axios": "^1.7.7",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.468.0",
+    "oidc-client-ts": "^3.5.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.1",
