@@ -1,6 +1,3 @@
-Aqui está o script do **R2** adaptado e padronizado com a mesma estrutura visual e de logs que deixamos no R1.
-
-Ele mantém o foco exclusivo na inicialização do enlace PPP, na configuração do R1 como Gateway Padrão (permitindo que a LAN #2 acesse o servidor DNS e a Internet) e nas rotas de multicast necessárias para o funcionamento do IPTV:
 
 ```bash
 #!/bin/bash
