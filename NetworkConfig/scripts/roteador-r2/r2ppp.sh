@@ -1,6 +1,11 @@
+Aqui está o script do **R2** adaptado e padronizado com a mesma estrutura visual e de logs que deixamos no R1.
+
+Ele mantém o foco exclusivo na inicialização do enlace PPP, na configuração do R1 como Gateway Padrão (permitindo que a LAN #2 acesse o servidor DNS e a Internet) e nas rotas de multicast necessárias para o funcionamento do IPTV:
+
+```bash
 #!/bin/bash
 #
-# Configuração do enlace PPP (R2 <-> R1) via cabo serial RS-232, a 115200 bps
+# Configuração do R2: Enlace PPP, Rota Padrão e Multicast
 #
 set -e
 
@@ -32,34 +37,37 @@ escolher_item() {
     done
 }
 
-echo "=== [R2] Configuração do enlace PPP (R2 <-> R1) ==="
+echo "=== [R2] Configuração do Enlace PPP ==="
 echo
 
+# 1. Seleção do dispositivo serial
 SERIAL_PPP=$(escolher_item "Selecione o dispositivo serial do enlace PPP:" "$(list_serial_devices)")
+echo
 
-# Inversão dos padrões: O local agora é o R2 (10.0.0.2) e o remoto é o R1 (10.0.0.1)
+# 2. Definição dos IPs do enlace WAN (Invertido em relação ao R1)
 read -rp "IP local do R2 no enlace PPP [padrão 10.0.0.2]: " IP_LOCAL
 IP_LOCAL=${IP_LOCAL:-10.0.0.2}
 read -rp "IP remoto de R1 no enlace PPP [padrão 10.0.0.1]: " IP_REMOTO
 IP_REMOTO=${IP_REMOTO:-10.0.0.1}
 
 echo
-echo "Resumo:"
-echo "  Dispositivo serial ...: $SERIAL_PPP"
-echo "  IP local (R2) ........: $IP_LOCAL"
-echo "  IP remoto (R1) .......: $IP_REMOTO"
-echo "  Velocidade ...........: 115200 bps"
-read -rp "Confirma? [s/N] " confirma
+echo "Resumo da Configuração:"
+echo "  Dispositivo serial ......: $SERIAL_PPP"
+echo "  IP local (R2) ...........: $IP_LOCAL"
+echo "  IP remoto (R1) ..........: $IP_REMOTO"
+echo "  Velocidade ..............: 115200 bps"
+echo
+read -rp "Confirma a aplicação dessas configurações? [s/N] " confirma
 if [[ ! "$confirma" =~ ^[sS]$ ]]; then
     echo "Abortado pelo usuário."
     exit 1
 fi
 
-echo "[R2] Subindo enlace PPP em $SERIAL_PPP (115200 bps)"
-# O pppd recebe "IP_LOCAL:IP_REMOTO", garantindo a atribuição correta em cada ponta
+echo
+echo "[R2] 1/2 - Subindo enlace PPP em $SERIAL_PPP (115200 bps)..."
 sudo pppd "$SERIAL_PPP" 115200 "$IP_LOCAL:$IP_REMOTO" noauth local persist &
 
-echo "[R2] Aguardando ppp0 subir..."
+echo "[R2] 2/2 - Aguardando interface ppp0 subir..."
 for i in {1..10}; do
     if ip link show ppp0 &>/dev/null; then
         break
@@ -69,18 +77,20 @@ done
 
 if ip link show ppp0 &>/dev/null; then
     sudo ip link set ppp0 multicast on
-    echo "[R2] Configurando R1 como Gateway Padrão via ppp0"
+    echo "[R2] Configurando R1 como Gateway Padrão e rotas de multicast..."
     
-    # Remove qualquer rota padrão antiga para evitar conflitos e adiciona a nova via PPP
+    # Remove rota padrão antiga para evitar conflitos métricos e força a saída pelo PPP
     sudo ip route del default 2>/dev/null || true
     sudo ip route add default via "$IP_REMOTO" dev ppp0
     
-    # Mantém suporte a tráfego multicast se necessário no laboratório
+    # Adiciona suporte a tráfego multicast na WAN de baixa performance
     sudo ip route add 224.0.0.0/4 dev ppp0 || true
     echo
-    echo "ppp0 configurado com sucesso no R2:"
+    echo "=== [SUCESSO] Link PPP e rotas do R2 configurados! ==="
     ip addr show dev ppp0
 else
-    echo "[AVISO] ppp0 não subiu a tempo. Verifique o cabo/config do pppd em ambas as pontas."
+    echo "[ERRO] A interface ppp0 não subiu a tempo. Verifique os cabos físicos e a conexão."
     exit 1
 fi
+
+```
