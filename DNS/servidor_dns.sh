@@ -2,17 +2,31 @@
 
 set -e
 
+# ============================================================
+# Servidor DNS (BIND9) do grupo — roda no HOST S (LAN #1).
+# Fundamentos de Redes de Computadores - 2026.1
+#
+# Topologia real do projeto:
+#   LAN #1 (S <-> R1) .....: 172.16.0.0/16   S=172.16.0.2  R1=172.16.0.1
+#   WAN/core (R1 <-> R2) ..: 10.0.0.0/24     R1=10.0.0.1   R2=10.0.0.2
+#   LAN #2 (clientes X/Y) .: 192.168.0.0/24  R2=192.168.0.1 (gateway)
+#
+#   DNS + SMTP rodam no host S; WWW/API Gateway no R1; DHCP no R2.
+# ============================================================
+
 # Configurações da empresa
 EMPRESA="PipeVendas"
 DOMINIO="pipevendas.com.br"
-DNS_IP="192.168.10.2"  # Servidor DNS dedicado
 
-# IPs dos servidores conforme planejado
-IP_ROTEADOR="192.168.10.254"
-IP_DNS="192.168.10.2"
-IP_WWW="192.168.10.3"
-IP_DHCP="192.168.10.4"
-IP_SMTP="192.168.10.5"
+# IPs dos servidores conforme a topologia real
+IP_DNS="172.16.0.2"        # host S (este servidor, DNS + SMTP)
+IP_SMTP="172.16.0.2"       # host S (mesmo IP do DNS)
+IP_ROTEADOR="172.16.0.1"   # R1 (gateway da LAN #1 / API Gateway / WWW)
+IP_WWW="172.16.0.1"        # R1 (Apache proxy reverso = www)
+IP_R2="192.168.0.1"        # R2 (gateway da LAN #2 e servidor DHCP)
+IP_DHCP="192.168.0.1"      # R2 (roda o serviço DHCP)
+
+DNS_IP="$IP_DNS"
 
 # Etapa 1 ==========================================
 echo "========= Instalando BIND para $EMPRESA... ========="
@@ -37,14 +51,21 @@ sudo tee /etc/bind/named.conf.local > /dev/null <<EOF
 zone "$DOMINIO" {
     type master;
     file "/etc/bind/db.$DOMINIO";
-    allow-update { 192.168.10.4; };  // DHCP pode atualizar
+    allow-update { $IP_DHCP; };  // DHCP (R2) pode atualizar via DDNS
 };
 
-// Zona reversa para rede 192.168.10.0/24
-zone "10.168.192.in-addr.arpa" {
+// Zona reversa dos SERVIDORES (LAN #1 172.16.0.0/16)
+zone "16.172.in-addr.arpa" {
     type master;
-    file "/etc/bind/db.10.168.192";
-    allow-update { 192.168.10.4; };  // DHCP pode atualizar
+    file "/etc/bind/db.16.172";
+    allow-update { $IP_DHCP; };
+};
+
+// Zona reversa dos CLIENTES (LAN #2 192.168.0.0/24)
+zone "0.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/db.0.168.192";
+    allow-update { $IP_DHCP; };  // DHCP (R2) pode atualizar via DDNS
 };
 
 EOF
@@ -56,7 +77,7 @@ sudo tee /etc/bind/db.$DOMINIO > /dev/null <<EOF
 \$TTL 86400
 
 @ IN SOA ns1.$DOMINIO. admin.$DOMINIO. (
-    2026062001  ; Serial (YYYYMMDDNN)
+    2026071101  ; Serial (YYYYMMDDNN)
     21600       ; Refresh (6 horas)
     1800        ; Retry (30 minutos)
     604800      ; Expire (1 semana)
@@ -74,12 +95,14 @@ sudo tee /etc/bind/db.$DOMINIO > /dev/null <<EOF
 localhost IN A 127.0.0.1
 
 ; Servidores da infraestrutura (IPs fixos)
-ns1     IN A $IP_DNS          ; Servidor DNS principal
+ns1     IN A $IP_DNS          ; Servidor DNS principal (host S)
 ns2     IN A $IP_DNS          ; Servidor DNS secundário (mesmo IP no lab)
-router  IN A $IP_ROTEADOR     ; Gateway/Roteador
-www     IN A $IP_WWW          ; Servidor Web
-dhcp    IN A $IP_DHCP         ; Servidor DHCP
-mail    IN A $IP_SMTP         ; Servidor de email
+router  IN A $IP_ROTEADOR     ; R1 - Gateway/Roteador da LAN #1
+r1      IN A $IP_ROTEADOR     ; R1 (alias)
+r2      IN A $IP_R2           ; R2 - Gateway da LAN #2 / DHCP
+www     IN A $IP_WWW          ; Servidor Web / API Gateway (R1)
+dhcp    IN A $IP_DHCP         ; Servidor DHCP (R2)
+mail    IN A $IP_SMTP         ; Servidor de email (host S)
 
 ; Aliases (CNAME) para serviços
 smtp    IN CNAME mail.$DOMINIO.
@@ -87,58 +110,78 @@ pop3    IN CNAME mail.$DOMINIO.
 imap    IN CNAME mail.$DOMINIO.
 
 ; ===================================================
-; NOTA: Os registros para as estações dos membros
+; NOTA: Os registros para as estações clientes (X/Y)
 ; serão adicionados DINAMICAMENTE pelo DHCP via DDNS
 ; ===================================================
 
 EOF
 
 # Etapa 5 ==========================================
-echo "Criando zona reversa para 192.168.10.0/24..."
+echo "Criando zona reversa dos SERVIDORES (172.16.0.0/16)..."
 
-sudo tee /etc/bind/db.10.168.192 > /dev/null <<EOF
+# Para 172.16.0.0/16 os nomes PTR são "<host>.<terceiro-octeto>"
+# Ex.: 172.16.0.2 -> "2.0", 172.16.0.1 -> "1.0"
+sudo tee /etc/bind/db.16.172 > /dev/null <<EOF
 \$TTL 86400
 
 @ IN SOA ns1.$DOMINIO. admin.$DOMINIO. (
-    2026062001  ; Serial (YYYYMMDDNN)
-    21600       ; Refresh (6 horas)
-    1800        ; Retry (30 minutos)
-    604800      ; Expire (1 semana)
-    86400       ; Minimum TTL (24 horas)
+    2026071101  ; Serial (YYYYMMDDNN)
+    21600       ; Refresh
+    1800        ; Retry
+    604800      ; Expire
+    86400       ; Minimum TTL
 )
 
 @ IN NS ns1.$DOMINIO.
 @ IN NS ns2.$DOMINIO.
 
-; Registros PTR para SERVIDORES (IPs fixos)
-254 IN PTR router.$DOMINIO.
-2   IN PTR ns1.$DOMINIO.
-3   IN PTR www.$DOMINIO.
-4   IN PTR dhcp.$DOMINIO.
-5   IN PTR mail.$DOMINIO.
+; Registros PTR para SERVIDORES da LAN #1 (IPs fixos)
+2.0 IN PTR ns1.$DOMINIO.     ; 172.16.0.2 (host S / DNS / mail)
+2.0 IN PTR mail.$DOMINIO.    ; 172.16.0.2
+1.0 IN PTR router.$DOMINIO.  ; 172.16.0.1 (R1 / www)
+
+EOF
+
+echo "Criando zona reversa dos CLIENTES (192.168.0.0/24)..."
+
+sudo tee /etc/bind/db.0.168.192 > /dev/null <<EOF
+\$TTL 86400
+
+@ IN SOA ns1.$DOMINIO. admin.$DOMINIO. (
+    2026071101  ; Serial (YYYYMMDDNN)
+    21600       ; Refresh
+    1800        ; Retry
+    604800      ; Expire
+    86400       ; Minimum TTL
+)
+
+@ IN NS ns1.$DOMINIO.
+@ IN NS ns2.$DOMINIO.
+
+; Registro PTR fixo do gateway da LAN #2
+1 IN PTR r2.$DOMINIO.   ; 192.168.0.1 (R2 / gateway / DHCP)
 
 ; ===================================================
-; NOTA: Os registros PTR para as estações dos membros
+; NOTA: Os registros PTR para as estações clientes (X/Y)
 ; serão adicionados DINAMICAMENTE pelo DHCP via DDNS
 ; ===================================================
 
 EOF
 
 # Etapa 6 ==========================================
-echo "Configurando permissões do diretório para atualizações dinâmicas..."
+echo "Configurando permissões dos arquivos de zona (updates dinâmicos)..."
 
-# Criar diretório para arquivos de zona com permissões adequadas
 sudo chown bind:bind /etc/bind/db.$DOMINIO
-sudo chown bind:bind /etc/bind/db.10.168.192
+sudo chown bind:bind /etc/bind/db.16.172
+sudo chown bind:bind /etc/bind/db.0.168.192
 
 # Etapa 7 ==========================================
 echo "Validando configuração..."
 
 sudo named-checkconf
-
 sudo named-checkzone $DOMINIO /etc/bind/db.$DOMINIO
-
-sudo named-checkzone 10.168.192.in-addr.arpa /etc/bind/db.10.168.192
+sudo named-checkzone 16.172.in-addr.arpa /etc/bind/db.16.172
+sudo named-checkzone 0.168.192.in-addr.arpa /etc/bind/db.0.168.192
 
 # Etapa 8 ==========================================
 echo "Reiniciando BIND..."
@@ -151,72 +194,47 @@ echo ""
 echo "=== CONFIGURAÇÃO CONCLUÍDA ==="
 echo ""
 echo "Domínio configurado: $DOMINIO"
-echo "Servidor DNS: $DNS_IP"
+echo "Servidor DNS (host S): $DNS_IP"
 echo ""
 echo "=== REGISTROS DNS CONFIGURADOS (SERVIDORES FIXOS) ==="
 echo ""
-echo "SERVIDORES:"
-echo "  ns1.$DOMINIO        → $IP_DNS"
-echo "  router.$DOMINIO     → $IP_ROTEADOR"
-echo "  www.$DOMINIO        → $IP_WWW"
-echo "  dhcp.$DOMINIO       → $IP_DHCP"
-echo "  mail.$DOMINIO       → $IP_SMTP"
+echo "  ns1.$DOMINIO / mail.$DOMINIO → $IP_DNS   (host S)"
+echo "  router.$DOMINIO / www.$DOMINIO → $IP_ROTEADOR (R1)"
+echo "  r2.$DOMINIO / dhcp.$DOMINIO   → $IP_R2   (R2)"
 echo ""
-echo "=== INTEGRAÇÃO COM DHCP (DDNS) ==="
+echo "=== INTEGRAÇÃO COM DHCP (DDNS) — DHCP roda no R2 ($IP_DHCP) ==="
 echo ""
-echo "Para que as estações clientes sejam registradas automaticamente:"
+echo "Para registro automático das estações, no R2 (/etc/dhcp/dhcpd.conf):"
 echo ""
-echo "1. No servidor DHCP (192.168.10.4), configure:"
-echo ""
-echo "   /etc/dhcp/dhcpd.conf:"
-echo "   --------------------"
 echo "   option domain-name \"$DOMINIO\";"
 echo "   option domain-name-servers $IP_DNS;"
-echo ""
 echo "   ddns-update-style interim;"
 echo "   ddns-updates on;"
-echo ""
-echo "   key rndc-key {"
-echo "       algorithm hmac-md5;"
-echo "       secret \"$(sudo rndc-confgen -a -b 256 -r /dev/urandom -q 2>/dev/null | grep -oP 'secret \"\K[^\"]+' || echo 'GERAR_SECRET')\";"
-echo "   };"
 echo ""
 echo "   zone $DOMINIO. {"
 echo "       primary $IP_DNS;"
 echo "       key rndc-key;"
 echo "   }"
-echo ""
-echo "   zone 10.168.192.in-addr.arpa. {"
+echo "   zone 0.168.192.in-addr.arpa. {"
 echo "       primary $IP_DNS;"
 echo "       key rndc-key;"
 echo "   }"
 echo ""
-echo "   subnet 192.168.10.0 netmask 255.255.255.0 {"
-echo "       range 192.168.10.100 192.168.10.200;"
-echo "       option routers $IP_ROTEADOR;"
-echo "       option domain-name \"$DOMINIO\";"
-echo "       option domain-name-servers $IP_DNS;"
-echo "   }"
-echo ""
-echo "2. No servidor DNS, crie a chave para comunicação com DHCP:"
+echo "No host S, gere a chave e inclua no BIND:"
 echo "   sudo rndc-confgen -a -b 256"
-echo ""
-echo "3. Configure o arquivo /etc/bind/named.conf para incluir a chave:"
-echo "   include \"/etc/bind/rndc.key\";"
+echo "   include \"/etc/bind/rndc.key\";  # em /etc/bind/named.conf"
 echo ""
 echo "=== TESTES ==="
 echo ""
-echo "Consulta direta (servidores):"
-echo "  host www.$DOMINIO"
-echo "  host mail.$DOMINIO"
+echo "Consulta direta:"
+echo "  host www.$DOMINIO      # espera $IP_WWW"
+echo "  host mail.$DOMINIO     # espera $IP_SMTP"
+echo "  host r2.$DOMINIO       # espera $IP_R2"
 echo ""
-echo "Consulta reversa (servidores):"
-echo "  host 192.168.10.3"
-echo "  host 192.168.10.5"
-echo ""
-echo "Após os clientes obterem IP via DHCP, teste:"
-echo "  host pedro.$DOMINIO  (se o cliente se identificou como 'pedro')"
-echo "  host 192.168.10.xxx  (IP obtido pelo cliente)"
+echo "Consulta reversa:"
+echo "  host $IP_DNS           # espera ns1/mail.$DOMINIO"
+echo "  host $IP_ROTEADOR      # espera router/www.$DOMINIO"
+echo "  host $IP_R2            # espera r2.$DOMINIO"
 echo ""
 echo "Status do serviço:"
 echo "  sudo systemctl status bind9"

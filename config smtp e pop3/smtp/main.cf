@@ -17,8 +17,8 @@ smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
 smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
 
 # Identidade do servidor (equivalente ao dpkg-reconfigure)
-myhostname = mail.alunos.com.br
-mydomain = alunos.com.br
+myhostname = mail.pipevendas.com.br
+mydomain = pipevendas.com.br
 myorigin = /etc/mailname
 
 # Interfaces e protocolos
@@ -28,8 +28,8 @@ inet_protocols = all
 # Destinos locais
 mydestination = pipevendas.com.br, localhost.localdomain, localhost
 
-# Redes autorizadas (127 + bancada do lab)
-mynetworks = 127.0.0.0/8, 192.168.10.0/24
+# Redes autorizadas (loopback + LAN #1, WAN/core e LAN #2 dos clientes)
+mynetworks = 127.0.0.0/8, 172.16.0.0/16, 10.0.0.0/24, 192.168.0.0/24
 
 # Aliases
 alias_maps = hash:/etc/aliases
