@@ -64,6 +64,6 @@ systemctl restart apache2
 
 echo
 echo "=== Proxy reverso ativo ==="
-echo "  Frontend : https://<IP_DO_R1>/"
-echo "  API      : https://<IP_DO_R1>/api/  ->  http://${BACKEND_HOST}:${BACKEND_PORT}/api/"
+echo "  Frontend : https://r1.miniiptv.lan/            (R1 = 172.16.0.1)"
+echo "  API      : https://r1.miniiptv.lan/api/  ->  http://${BACKEND_HOST}:${BACKEND_PORT}/api/"
 echo "  (certificado autoassinado: o navegador exibira aviso na primeira visita)"
