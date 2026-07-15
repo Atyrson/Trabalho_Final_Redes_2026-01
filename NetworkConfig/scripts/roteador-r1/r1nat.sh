@@ -74,3 +74,5 @@ echo
 echo "=== Configuração do NAT Concluída com Sucesso! ==="
 echo "Regras de POSTROUTING ativas:"
 iptables -t nat -L POSTROUTING -v -n
+echo "Mostrando outras regras"
+iptables -t nat -S

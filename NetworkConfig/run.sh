@@ -22,12 +22,17 @@ listar_scripts() {
     local i=1
     declare -a scripts
     
-    # Procura por scripts .sh na pasta
+    # Procura por todos os scripts .sh na pasta (sem verificar se é executável)
     while IFS= read -r script; do
-        if [ -f "$script" ] && [ -x "$script" ]; then
+        if [ -f "$script" ]; then
             scripts[$i]="$script"
             nome=$(basename "$script")
-            echo -e "${GREEN}$i)${NC} $nome"
+            # Verifica se é executável para mostrar indicador
+            if [ -x "$script" ]; then
+                echo -e "${GREEN}$i)${NC} $nome ${BLUE}[executável]${NC}"
+            else
+                echo -e "${YELLOW}$i)${NC} $nome ${RED}[não executável]${NC}"
+            fi
             ((i++))
         fi
     done < <(find "$SCRIPT_DIR" -maxdepth 1 -name "*.sh" 2>/dev/null | sort)
@@ -38,10 +43,14 @@ listar_scripts() {
         echo -e "${YELLOW}Procurando na pasta atual...${NC}"
         
         while IFS= read -r script; do
-            if [ -f "$script" ] && [ -x "$script" ]; then
+            if [ -f "$script" ]; then
                 scripts[$i]="$script"
                 nome=$(basename "$script")
-                echo -e "${GREEN}$i)${NC} $nome"
+                if [ -x "$script" ]; then
+                    echo -e "${GREEN}$i)${NC} $nome ${BLUE}[executável]${NC}"
+                else
+                    echo -e "${YELLOW}$i)${NC} $nome ${RED}[não executável]${NC}"
+                fi
                 ((i++))
             fi
         done < <(find . -maxdepth 1 -name "*.sh" ! -name "menu.sh" 2>/dev/null | sort)
@@ -75,8 +84,15 @@ executar_script() {
         echo "----------------------------------------"
         echo
         
-        # Executa o script
-        bash "$script_path"
+        # Verifica se o script é executável
+        if [ -x "$script_path" ]; then
+            # Executa o script diretamente se for executável
+            "$script_path"
+        else
+            # Executa com bash se não for executável
+            echo -e "${YELLOW}Script não é executável. Executando com bash...${NC}"
+            bash "$script_path"
+        fi
         
         echo
         echo "----------------------------------------"
