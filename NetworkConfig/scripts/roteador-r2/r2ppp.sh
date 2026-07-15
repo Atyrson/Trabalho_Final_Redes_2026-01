@@ -85,16 +85,4 @@ for i in {1..10}; do
     sleep 1
 done
 
-if ip link show ppp0 &>/dev/null; then
-    sudo ip link set ppp0 multicast on
-    echo "[R2] Configurando R1 como Gateway Padrão e rotas de multicast..."
-    sudo ip route del default 2>/dev/null || true
-    sudo ip route add default via "$IP_REMOTO" dev ppp0
-    sudo ip route add 224.0.0.0/4 dev ppp0 || true
-    echo
-    echo "=== [SUCESSO] R2 configurado via arquivo de peer! ==="
-    ip addr show dev ppp0
-else
-    echo "[ERRO] A interface ppp0 não subiu. Verifique os cabos físicos."
-    exit 1
-fi
+

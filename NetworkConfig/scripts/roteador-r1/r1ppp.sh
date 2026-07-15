@@ -83,16 +83,3 @@ for i in {1..10}; do
     fi
     sleep 1
 done
-
-if ip link show ppp0 &>/dev/null; then
-    sudo ip link set ppp0 multicast on
-    echo "[R1] Configurando rotas estáticas e multicast via ppp0..."
-    sudo ip route add 192.168.0.0/24 via "$IP_REMOTO" dev ppp0 || true
-    sudo ip route add 224.0.0.0/4 dev ppp0 || true
-    echo
-    echo "=== [SUCESSO] R1 configurado via arquivo de peer! ==="
-    ip addr show dev ppp0
-else
-    echo "[ERRO] A interface ppp0 não subiu. Verifique os cabos físicos."
-    exit 1
-fi
