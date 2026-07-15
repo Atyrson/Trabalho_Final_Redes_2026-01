@@ -21,7 +21,28 @@ class WanConflict(ValueError):
         self.active_channel = active_channel
 
 
+def cleanup_stale_sessions(timeout_seconds: int | None = None) -> int:
+    timeout = timeout_seconds or get_settings().session_timeout_seconds
+    stale_sessions = repo.list_stale_sessions(timeout)
+    if not stale_sessions:
+        return 0
+
+    stale_pairs = {(session["channel_id"], session["profile"]) for session in stale_sessions}
+    repo.deactivate_sessions([session["id"] for session in stale_sessions])
+
+    for channel_id, profile in stale_pairs:
+        if repo.count_active_sessions(channel_id, profile) > 0:
+            continue
+        stream = repo.find_active_stream(profile, channel_id)
+        if stream:
+            streaming.stop_stream(stream["pid"])
+            repo.delete_active_stream(stream["id"])
+
+    return len(stale_sessions)
+
+
 def enter_channel(user_id: int, channel_id: int, profile: str) -> SessionDecision:
+    cleanup_stale_sessions()
     channel = repo.get_channel(channel_id)
     if not channel:
         raise LookupError("channel not found")

@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from app import repositories as repo
 from app.dependencies import detect_client_profile, get_current_user
 from app.services import playlists
-from app.services.sessions import WanConflict, enter_channel, heartbeat, leave_session
+from app.services.sessions import WanConflict, cleanup_stale_sessions, enter_channel, heartbeat, leave_session
 
 
 router = APIRouter(prefix="/api", tags=["channels"])
@@ -11,6 +11,7 @@ router = APIRouter(prefix="/api", tags=["channels"])
 
 @router.get("/canais")
 def list_channels(current_user: dict = Depends(get_current_user)):
+    cleanup_stale_sessions()
     return [
         {
             "id": channel["id"],

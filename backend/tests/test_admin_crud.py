@@ -36,3 +36,11 @@ def test_admin_can_create_update_delete_video(app_client, auth_headers):
     assert update.status_code == 200
     assert update.json()["title"] == "Video Atualizado"
     assert delete.status_code == 204
+
+
+def test_admin_can_list_videos(app_client, auth_headers):
+    response = app_client.get("/api/admin/videos", headers=auth_headers["admin"])
+
+    assert response.status_code == 200
+    assert len(response.json()) >= 3
+    assert response.json()[0]["title"] == "Video 1"

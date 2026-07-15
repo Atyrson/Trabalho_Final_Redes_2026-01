@@ -57,3 +57,31 @@ def test_existing_compatible_stream_is_reused_and_last_leave_stops(app_client, m
 
     assert len(started) == 1
     assert stopped == [5001]
+
+
+def test_stale_session_cleanup_deactivates_session_and_stops_stream(app_client, monkeypatch):
+    from app.db import transaction
+    from app.services.sessions import cleanup_stale_sessions, enter_channel
+
+    stopped = []
+
+    monkeypatch.setattr("app.services.streaming.start_stream", lambda path, multicast_address, port=5004: 7001)
+    monkeypatch.setattr("app.services.streaming.stop_stream", lambda pid: stopped.append(pid))
+
+    decision = enter_channel(2, 1, "LAN")
+    with transaction() as con:
+        con.execute(
+            "UPDATE sessions SET last_seen = datetime('now', '-120 seconds') WHERE id = ?",
+            (decision.session_id,),
+        )
+
+    cleaned = cleanup_stale_sessions(timeout_seconds=60)
+
+    with transaction() as con:
+        session = con.execute("SELECT active FROM sessions WHERE id = ?", (decision.session_id,)).fetchone()
+        stream_count = con.execute("SELECT COUNT(*) FROM active_streams").fetchone()[0]
+
+    assert cleaned == 1
+    assert session["active"] == 0
+    assert stream_count == 0
+    assert stopped == [7001]
